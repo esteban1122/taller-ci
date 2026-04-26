@@ -2,22 +2,30 @@ name: ci-verificar-codigo
 
 on:
   push:
-    branches: ["main"]
+    branches: ['main']
 
 jobs:
-  verificar_codigo:
+  integracion-continua:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: validar html
-        run: echo prueba
+      - name: Descargar el código del repositorio
+        uses: actions/checkout@v3
 
-  desplegar_pagina:
+      - name: Prueba de existencia de archivos
+        run: |
+          if [ -f "vistas/index.html" ] && [ -f "css/styles.css" ]; then
+            echo "Éxito: Los archivos index.html y styles.css existen en sus carpetas."
+          else
+            echo "Error: Faltan archivos base."
+            exit 1
+          fi
+
+  despliegue-continuo:
+    needs: integracion-continua
     runs-on: ubuntu-latest
-    needs: verificar_codigo
+ 
     steps:
-      - name: Desplegar
-        run: echo "Desplegando pagina..."
-
-# cirprueba.yml
+      - name: Simulación de Despliegue
+        run: |
+          echo "Compilando activos y preparando servidor..."
+          echo "Artefactos listos para el despliegue en el entorno de Staging"
